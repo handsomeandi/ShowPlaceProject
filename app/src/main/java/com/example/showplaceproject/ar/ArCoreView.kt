@@ -4,8 +4,12 @@ package com.example.showplaceproject.ar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidViewBinding
+import com.example.showplaceproject.core.setCenter
 import com.example.showplaceproject.databinding.ArCoreLayoutBinding
+import com.google.ar.sceneform.AnchorNode
+import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.Node
+import com.google.ar.sceneform.Scene.OnUpdateListener
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.ArFragment
 
@@ -14,7 +18,8 @@ import com.google.ar.sceneform.ux.ArFragment
 fun ArCoreView(
     isModelAdded: Boolean,
     model: ModelRenderable,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onUpdateListener: (FrameTime?, ArFragment, ModelRenderable) -> Unit
 ) {
 
     AndroidViewBinding(
@@ -22,17 +27,8 @@ fun ArCoreView(
         factory = ArCoreLayoutBinding::inflate,
         update = {
             val arFragment = fragmentContainerView.getFragment<ArFragment>()
-            arFragment.setOnTapArPlaneListener { hitResult, _, _ ->
-//                if (!isModelAdded) {
-//                    arFragment.arSceneView.scene.addChild(AnchorNode(hitResult.createAnchor()).apply {
-//                        addChild(TransformableNode(arFragment.transformationSystem).apply {
-//                            renderable = model
-//                        })
-//                    })
-                arFragment.arSceneView.scene.addChild(Node().apply {
-                    renderable = model
-                })
-//                }
+            arFragment.arSceneView.scene.addOnUpdateListener { frameTime ->
+                onUpdateListener(frameTime, arFragment, model)
             }
         }
     )
