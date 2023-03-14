@@ -16,7 +16,6 @@ import com.google.ar.sceneform.ux.ArFragment
 
 @Composable
 fun ArCoreView(
-    isModelAdded: Boolean,
     model: ModelRenderable,
     modifier: Modifier = Modifier,
     onUpdateListener: (FrameTime?, ArFragment, ModelRenderable) -> Unit
