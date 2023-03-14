@@ -4,12 +4,8 @@ package com.example.showplaceproject.ar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidViewBinding
-import com.example.showplaceproject.core.setCenter
 import com.example.showplaceproject.databinding.ArCoreLayoutBinding
-import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.FrameTime
-import com.google.ar.sceneform.Node
-import com.google.ar.sceneform.Scene.OnUpdateListener
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.ArFragment
 
