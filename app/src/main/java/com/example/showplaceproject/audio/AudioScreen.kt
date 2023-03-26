@@ -1,15 +1,10 @@
 package com.example.showplaceproject.audio
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -20,58 +15,33 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.example.showplaceproject.R
+import com.example.showplaceproject.SelectedScreen
+import com.example.showplaceproject.bottomnav.ShowPlaceBottomNavigation
 import com.example.showplaceproject.core.AudioWaveform
 import com.example.showplaceproject.ui.theme.*
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AudioScreen() {
-    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
-    )
-    val coroutineScope = rememberCoroutineScope()
-
-    BottomSheetScaffold(
-        scaffoldState = bottomSheetScaffoldState,
-        sheetContent = {
-            Column {
-                BottomSheetElement("Element 1", true)
-                BottomSheetElement("Element 2", false)
-                BottomSheetElement("Element 3", false)
-            }
-        },
-        sheetPeekHeight = 0.dp
+    Column(
     ) {
-        Column(
-            Modifier
+        Text(
+            text = "Прослушивайте \nаудио!",
+            style = Typography.h1,
+            modifier = Modifier.padding(top = 60.dp, bottom = 33.dp)
                 .padding(horizontal = 24.dp)
-                .padding(bottom = 33.dp)
-        ) {
-            Text(
-                text = "Прослушивайте \nаудио!",
-                style = Typography.h1,
-                modifier = Modifier.padding(top = 60.dp, bottom = 33.dp)
-            )
-            LazyColumn {
-                items(5) { index ->
-                    AudioElement("Первые обитатели")
-                }
+        )
+        LazyColumn(modifier = Modifier.fillMaxWidth().weight(1f)
+            .padding(horizontal = 24.dp)) {
+            items(5) { index ->
+                AudioElement("Первые обитатели")
             }
         }
+        ShowPlaceBottomNavigation(SelectedScreen.AUDIO)
     }
+
 }
 
-
-@Composable
-fun BottomSheetElement(text: String, isSelected: Boolean) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        if (isSelected) {
-            Icon(imageVector = Icons.Default.Check, contentDescription = null)
-        }
-        Text(text = text)
-    }
-}
 
 //TODO: make audio element class containing name, duration and audio itself
 @Composable
@@ -121,7 +91,32 @@ fun AudioElement(title: String) {
                     )
                 }
                 AudioWaveform(
-                    amplitudes = listOf(45, 40, 35, 40, 30, 45, 30, 45, 39, 27, 35, 30, 45, 40, 35, 40, 30, 45, 30, 45, 39, 27, 35, 30),
+                    amplitudes = listOf(
+                        45,
+                        40,
+                        35,
+                        40,
+                        30,
+                        45,
+                        30,
+                        45,
+                        39,
+                        27,
+                        35,
+                        30,
+                        45,
+                        40,
+                        35,
+                        40,
+                        30,
+                        45,
+                        30,
+                        45,
+                        39,
+                        27,
+                        35,
+                        30
+                    ),
                     progress = progress,
                     progressBrush = SolidColor(AudioTrackColor),
                     waveformBrush = SolidColor(AudioTrackBackground),

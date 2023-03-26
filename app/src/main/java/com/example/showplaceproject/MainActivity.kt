@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -17,10 +15,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import com.example.showplaceproject.ar.ArCoreView
 import com.example.showplaceproject.audio.AudioScreen
+import com.example.showplaceproject.bottomnav.ShowPlaceBottomNavigation
 import com.example.showplaceproject.ui.theme.ShowPlaceProjectTheme
 import com.google.ar.core.Frame
 import com.google.ar.core.Plane
@@ -43,109 +44,12 @@ class MainActivity : FragmentActivity() {
         setContent {
             ShowPlaceProjectTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.background
+                ) {
                     AudioScreen()
-//                    Box(modifier = Modifier
-//                        .fillMaxSize()) {
-//                        val modelObject by model.observeAsState()
-//                        modelObject?.let {
-//                            ArCoreView(
-//                                model = it,
-//                                onUpdateListener = ::onUpdate
-//                            )
-//                        }
-//
-//                        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-//                            val centerImage = createRef()
-//                            Image(
-//                                painter = painterResource(id = R.drawable.borders),
-//                                contentDescription = "borders",
-//                                modifier = Modifier
-//                                    .padding(top = 45.dp, bottom = 38.dp)
-//                                    .constrainAs(centerImage) {
-//                                        centerHorizontallyTo(parent)
-//                                        centerVerticallyTo(parent)
-//                                    }
-//                            )
-//                            Image(
-//                                painter = painterResource(id = R.drawable.ic_geo),
-//                                contentDescription = "Left Image",
-//                                modifier = Modifier
-//                                    .constrainAs(createRef()) {
-//                                        start.linkTo(centerImage.start)
-//                                        bottom.linkTo(centerImage.top)
-//                                    }
-//                            )
-//                            Image(
-//                                painter = painterResource(id = R.drawable.ic_question),
-//                                contentDescription = "Right Image",
-//                                modifier = Modifier
-//                                    .constrainAs(createRef()) {
-//                                        end.linkTo(centerImage.end)
-//                                        bottom.linkTo(centerImage.top)
-//                                    }
-//                            )
-//                            Box(modifier = Modifier
-//                                .fillMaxWidth()
-//                                .constrainAs(createRef()) {
-//                                    bottom.linkTo(parent.bottom)
-//                                }) {
-//                                ConstraintLayout(
-//                                    modifier = Modifier
-//                                        .fillMaxWidth()
-//                                ) {
-//
-//                                    val bottomCenterImage = createRef()
-//                                    val backgroundImage = createRef()
-//                                    Image(
-//                                        painter = painterResource(id = R.drawable.ic_bottom_background),
-//                                        contentDescription = "background",
-//                                        contentScale = ContentScale.FillWidth,
-//                                        modifier = Modifier
-//                                            .fillMaxWidth()
-//                                            .constrainAs(backgroundImage) {
-//                                                bottom.linkTo(parent.bottom)
-//                                            }
-//                                            .offset(y = (8).dp)
-//                                    )
-//
-//                                    Image(
-//                                        painter = painterResource(id = R.drawable.ic_audio),
-//                                        contentDescription = "Bottom Left Image",
-//                                        modifier = Modifier.constrainAs(createRef()) {
-//
-//                                            end.linkTo(bottomCenterImage.start)
-//                                            start.linkTo(parent.start)
-//                                            top.linkTo(backgroundImage.top)
-//                                            bottom.linkTo(backgroundImage.bottom)
-//                                        }
-//                                    )
-//                                    Image(
-//                                        painter = painterResource(id = R.drawable.ic_circle),
-//                                        contentDescription = "Bottom Center Image",
-//                                        modifier = Modifier
-//                                            .constrainAs(bottomCenterImage) {
-//                                                end.linkTo(parent.end)
-//                                                start.linkTo(parent.start)
-//                                                bottom.linkTo(backgroundImage.bottom)
-//                                            }
-//                                            .padding(bottom = 30.dp)
-//                                    )
-//                                    Image(
-//                                        painter = painterResource(id = R.drawable.ic_media),
-//                                        contentDescription = "Bottom Right Image",
-//                                        modifier = Modifier.constrainAs(createRef()) {
-//                                            end.linkTo(parent.end)
-//                                            start.linkTo(bottomCenterImage.end)
-//                                            top.linkTo(backgroundImage.top)
-//                                            bottom.linkTo(backgroundImage.bottom)
-//                                        }
-//                                    )
-//                                }
-//                            }
-//
-//                        }
-//                    }
+//                    MainScreen()
                 }
             }
         }
@@ -155,12 +59,69 @@ class MainActivity : FragmentActivity() {
             "https://github.com/google/model-viewer/blob/master/packages/shared-assets/models/Astronaut.glb?raw=true"
 //            "https://github.com/eduter/sokobot-3d/raw/master/public/3d-models/robot.glb"
 //            "https://github.com/KhronosGroup/glTF-Sample-Models/blob/master/1.0/Box/glTF/Box.gltf"
-//        getModelForExercise(uri)
-//        lifecycleScope.launch(Dispatchers.Main) {
-//
-//        }
+        getModelForExercise(uri)
 
     }
+
+    @Composable
+    private fun MainScreen() {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            val modelObject by model.observeAsState()
+            modelObject?.let {
+                ArCoreView(
+                    model = it,
+                    onUpdateListener = ::onUpdate
+                )
+            }
+
+            ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+                val centerImage = createRef()
+                Image(
+                    painter = painterResource(id = R.drawable.borders),
+                    contentDescription = "borders",
+                    modifier = Modifier
+                        .padding(top = 45.dp, bottom = 38.dp)
+                        .constrainAs(centerImage) {
+                            centerHorizontallyTo(parent)
+                            centerVerticallyTo(parent)
+                        }
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.ic_geo),
+                    contentDescription = "Left Image",
+                    modifier = Modifier
+                        .constrainAs(createRef()) {
+                            start.linkTo(centerImage.start)
+                            bottom.linkTo(centerImage.top)
+                        }
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.ic_question),
+                    contentDescription = "Right Image",
+                    modifier = Modifier
+                        .constrainAs(createRef()) {
+                            end.linkTo(centerImage.end)
+                            bottom.linkTo(centerImage.top)
+                        }
+                )
+
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .constrainAs(createRef()) {
+                        bottom.linkTo(parent.bottom)
+                    }) {
+                    ShowPlaceBottomNavigation(SelectedScreen.MAIN)
+                }
+
+            }
+        }
+    }
+
+
+
 
     @Preview
     @Composable
@@ -188,7 +149,11 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    private fun onUpdate(frameTime: FrameTime?, fragment: ArFragment, modelRenderable: ModelRenderable) {
+    private fun onUpdate(
+        frameTime: FrameTime?,
+        fragment: ArFragment,
+        modelRenderable: ModelRenderable
+    ) {
         //get the frame from the scene for shorthand
         val frame = fragment.arSceneView.arFrame
         if (frame != null) {
