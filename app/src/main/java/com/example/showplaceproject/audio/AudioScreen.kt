@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.showplaceproject.R
 import com.example.showplaceproject.SelectedScreen
 import com.example.showplaceproject.bottomnav.ShowPlaceBottomNavigation
@@ -22,7 +23,7 @@ import com.example.showplaceproject.ui.theme.*
 import kotlinx.coroutines.delay
 
 @Composable
-fun AudioScreen() {
+fun AudioScreen(navHostController: NavHostController) {
     Column(
     ) {
         Text(
@@ -37,7 +38,7 @@ fun AudioScreen() {
                 AudioElement("Первые обитатели")
             }
         }
-        ShowPlaceBottomNavigation(SelectedScreen.AUDIO)
+        ShowPlaceBottomNavigation(SelectedScreen.AUDIO, navHostController)
     }
 
 }

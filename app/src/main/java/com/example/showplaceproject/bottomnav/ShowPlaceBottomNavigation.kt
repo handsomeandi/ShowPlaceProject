@@ -1,6 +1,7 @@
 package com.example.showplaceproject.bottomnav
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -15,14 +16,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavHostController
 import com.example.showplaceproject.R
 import com.example.showplaceproject.SelectedScreen
+import com.example.showplaceproject.navigation.NavigationItem
 import com.example.showplaceproject.ui.theme.AudioIconColor
 import com.example.showplaceproject.ui.theme.AudioIconColorSecondary
 
 
 @Composable
-fun ShowPlaceBottomNavigation(selectedScreen: SelectedScreen) {
+fun ShowPlaceBottomNavigation(
+    selectedScreen: SelectedScreen,
+    navHostController: NavHostController
+) {
     when (selectedScreen) {
         SelectedScreen.MAIN -> {
             ConstraintLayout(
@@ -46,13 +52,20 @@ fun ShowPlaceBottomNavigation(selectedScreen: SelectedScreen) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_audio),
                     contentDescription = "Bottom Left Image",
-                    modifier = Modifier.constrainAs(createRef()) {
-
-                        end.linkTo(bottomCenterImage.start)
-                        start.linkTo(parent.start)
-                        top.linkTo(backgroundImage.top)
-                        bottom.linkTo(backgroundImage.bottom)
-                    }
+                    modifier = Modifier
+                        .clickable {
+                            navHostController.navigate(NavigationItem.Audio.route){
+                                popUpTo(NavigationItem.Audio.route) {
+                                    inclusive = true
+                                }
+                            }
+                        }
+                        .constrainAs(createRef()) {
+                            start.linkTo(parent.start)
+                            top.linkTo(backgroundImage.top)
+                            bottom.linkTo(backgroundImage.bottom)
+                        }
+                        .padding(start = 70.dp)
                 )
                 Image(
                     painter = painterResource(id = R.drawable.ic_circle),
@@ -68,12 +81,13 @@ fun ShowPlaceBottomNavigation(selectedScreen: SelectedScreen) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_media),
                     contentDescription = "Bottom Right Image",
-                    modifier = Modifier.constrainAs(createRef()) {
-                        end.linkTo(parent.end)
-                        start.linkTo(bottomCenterImage.end)
-                        top.linkTo(backgroundImage.top)
-                        bottom.linkTo(backgroundImage.bottom)
-                    }
+                    modifier = Modifier
+                        .padding(end = 70.dp)
+                        .constrainAs(createRef()) {
+                            end.linkTo(parent.end)
+                            top.linkTo(backgroundImage.top)
+                            bottom.linkTo(backgroundImage.bottom)
+                        }
                 )
             }
         }
@@ -95,7 +109,8 @@ fun ShowPlaceBottomNavigation(selectedScreen: SelectedScreen) {
                             .fillMaxWidth()
                             .align(CenterHorizontally)
                             .padding(vertical = 30.dp, horizontal = 70.dp)
-                            .shadow(40.dp, clip = true),
+                            .shadow(40.dp, clip = true)
+                            .offset(y = (2).dp),
                     ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_audio),
@@ -105,7 +120,15 @@ fun ShowPlaceBottomNavigation(selectedScreen: SelectedScreen) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_camera),
                             contentDescription = "Icon 2",
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable {
+                                    navHostController.navigate(NavigationItem.Main.route) {
+                                        popUpTo(NavigationItem.Main.route) {
+                                            inclusive = true
+                                        }
+                                    }
+                                },
                             tint = AudioIconColorSecondary,
                         )
                         Icon(
