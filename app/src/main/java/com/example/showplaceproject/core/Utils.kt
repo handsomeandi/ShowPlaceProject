@@ -1,6 +1,8 @@
 package com.example.showplaceproject.core
 
+import android.view.View
 import com.google.android.filament.utils.Float3
+import com.google.ar.core.Frame
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Vector3
 
@@ -21,3 +23,7 @@ operator fun Float3.plus(v: Float3) = Float3(x + v.x, y + v.y, z + v.z)
 operator fun Float3.minus(v: Float3) = Float3(x - v.x, y - v.y, z - v.z)
 operator fun Float3.times(v: Float3) = Float3(x * v.x, y * v.y, z * v.z)
 operator fun Float3.unaryMinus() = Float3(-x, -y, -z)
+
+fun Frame.screenCenter(view: View): Vector3 {
+    return Vector3(view.width / 2f, view.height / 2f, 0f)
+}

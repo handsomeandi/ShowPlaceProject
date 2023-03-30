@@ -2,6 +2,7 @@ package com.example.showplaceproject.data.di
 
 import com.example.showplaceproject.data.network.AppUrls
 import com.example.showplaceproject.data.network.api.GeoApi
+import com.example.showplaceproject.data.network.api.GeoMockApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -39,8 +40,12 @@ class NetworkModule {
     fun provideLogger(): HttpLoggingInterceptor = HttpLoggingInterceptor()
 
 
+//    @Singleton
+//    @Provides
+//    fun provideServerApi(retrofit: Retrofit): GeoApi = retrofit.create(GeoApi::class.java)
+
     @Singleton
     @Provides
-    fun provideServerApi(retrofit: Retrofit): GeoApi = retrofit.create(GeoApi::class.java)
+    fun provideMockApi(retrofit: Retrofit): GeoApi = GeoMockApi()
 
 }

@@ -42,17 +42,3 @@ data class AudioEntity(
     @SerializedName("longitude") var longitude: Double? = null,
     @SerializedName("latitude") var latitude: Double? = null
 )
-
-data class WeatherEntity(
-    @SerializedName("description") var description: String? = null,
-    @SerializedName("icon") var icon: String? = null
-)
-
-data class WindEntity(
-    @SerializedName("speed") var speed: String? = null
-)
-
-data class SunEntity(
-    @SerializedName("sunrise") var sunrise: Long = 0,
-    @SerializedName("sunset") var sunset: Long = 0
-)

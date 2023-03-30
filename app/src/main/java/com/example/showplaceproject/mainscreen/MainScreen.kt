@@ -22,6 +22,7 @@ import com.example.showplaceproject.R
 import com.example.showplaceproject.SelectedScreen
 import com.example.showplaceproject.ar.ArCoreView
 import com.example.showplaceproject.bottomnav.ShowPlaceBottomNavigation
+import com.example.showplaceproject.core.screenCenter
 import com.google.ar.core.Frame
 import com.google.ar.core.Plane
 import com.google.ar.core.Pose
@@ -153,9 +154,6 @@ private fun onUpdate(
     }
 }
 
-private fun Frame.screenCenter(view: View): Vector3 {
-    return Vector3(view.width / 2f, view.height / 2f, 0f)
-}
 
 fun getModelForExercise(context: Context, model: MutableLiveData<ModelRenderable>, nameModel: String) {
     ModelRenderable.builder()
