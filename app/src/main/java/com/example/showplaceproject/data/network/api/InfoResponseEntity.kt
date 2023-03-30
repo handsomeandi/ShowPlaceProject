@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class InfoResponseEntity(
     @SerializedName("models") val models: List<ModelEntity>? = null,
-    @SerializedName("audio") val weather: List<AudioEntity>? = null,
+    @SerializedName("audio") val audio: List<AudioEntity>? = null,
     @SerializedName("text") val text: List<TextEntity>,
     @SerializedName("photos") val photos: List<PhotoEntity>,
     @SerializedName("metadata") val metadata: MetadataEntity
