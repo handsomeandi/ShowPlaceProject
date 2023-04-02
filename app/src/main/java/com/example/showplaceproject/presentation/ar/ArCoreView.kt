@@ -1,4 +1,4 @@
-package com.example.showplaceproject.ar
+package com.example.showplaceproject.presentation.ar
 
 
 import androidx.compose.runtime.Composable
@@ -6,7 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.lifecycle.ViewModel
 import com.example.showplaceproject.databinding.ArCoreLayoutBinding
-import com.example.showplaceproject.mainscreen.MainScreenViewModel
+import com.example.showplaceproject.presentation.mainscreen.MainScreenViewModel
 import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.ArFragment

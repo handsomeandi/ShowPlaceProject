@@ -1,4 +1,4 @@
-package com.example.showplaceproject.ui.theme
+package com.example.showplaceproject.presentation.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

@@ -1,4 +1,4 @@
-package com.example.showplaceproject.navigation
+package com.example.showplaceproject.presentation.navigation
 
 sealed class NavigationItem(var route: String) {
     object Main : NavigationItem("main")

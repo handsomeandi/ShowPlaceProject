@@ -1,4 +1,4 @@
-package com.example.showplaceproject
+package com.example.showplaceproject.presentation
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -12,10 +12,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.showplaceproject.audio.AudioScreen
-import com.example.showplaceproject.mainscreen.MainScreen
-import com.example.showplaceproject.navigation.NavigationItem
-import com.example.showplaceproject.ui.theme.ShowPlaceProjectTheme
+import com.example.showplaceproject.presentation.audio.AudioScreen
+import com.example.showplaceproject.presentation.mainscreen.MainScreen
+import com.example.showplaceproject.presentation.navigation.NavigationItem
+import com.example.showplaceproject.presentation.theme.ShowPlaceProjectTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 //TODO: make possible to open obj and types other than glb

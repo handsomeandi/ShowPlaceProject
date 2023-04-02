@@ -1,4 +1,4 @@
-package com.example.showplaceproject.mainscreen
+package com.example.showplaceproject.presentation.mainscreen
 
 import android.content.Context
 import android.net.Uri
@@ -20,9 +20,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavHostController
 import com.example.showplaceproject.R
-import com.example.showplaceproject.SelectedScreen
-import com.example.showplaceproject.ar.ArCoreView
-import com.example.showplaceproject.bottomnav.ShowPlaceBottomNavigation
+import com.example.showplaceproject.presentation.SelectedScreen
+import com.example.showplaceproject.presentation.ar.ArCoreView
+import com.example.showplaceproject.presentation.bottomnav.ShowPlaceBottomNavigation
 import com.example.showplaceproject.core.screenCenter
 import com.google.ar.core.Plane
 import com.google.ar.core.Pose

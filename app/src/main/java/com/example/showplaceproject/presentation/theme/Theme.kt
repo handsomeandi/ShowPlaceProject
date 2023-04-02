@@ -1,4 +1,4 @@
-package com.example.showplaceproject.ui.theme
+package com.example.showplaceproject.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme

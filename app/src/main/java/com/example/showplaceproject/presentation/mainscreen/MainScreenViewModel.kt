@@ -1,4 +1,4 @@
-package com.example.showplaceproject.mainscreen
+package com.example.showplaceproject.presentation.mainscreen
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData

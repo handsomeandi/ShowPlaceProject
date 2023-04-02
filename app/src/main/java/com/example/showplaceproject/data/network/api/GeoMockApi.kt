@@ -35,14 +35,19 @@ class GeoMockApi : GeoApi {
         val mockAudioEntity = AudioEntity(
             id = 1,
             name = "Audio 1",
-            file = "audio1.mp3",
+            file = "https://file-examples.com/storage/fef89aabc36429826928b9c/2017/11/file_example_MP3_700KB.mp3",
             longitude = 12.34,
             latitude = 56.78
         )
 
         return InfoResponseEntity(
             models = listOf(mockModelEntity),
-            audio = listOf(mockAudioEntity),
+            audio = listOf(
+                mockAudioEntity,
+                mockAudioEntity.copy(id = 2, name = "Audio 2"),
+                mockAudioEntity.copy(id = 3, name = "Audio 3"),
+                mockAudioEntity.copy(id = 4, name = "Audio 4")
+            ),
             text = listOf(mockTextEntity),
             photos = listOf(mockPhotoEntity),
             metadata = mockMetadataEntity

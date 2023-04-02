@@ -1,4 +1,4 @@
-package com.example.showplaceproject
+package com.example.showplaceproject.presentation
 
 enum class SelectedScreen {
     MAIN,

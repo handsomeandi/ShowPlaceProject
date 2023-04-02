@@ -1,4 +1,4 @@
-package com.example.showplaceproject.bottomnav
+package com.example.showplaceproject.presentation.bottomnav
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -18,10 +18,10 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import com.example.showplaceproject.R
-import com.example.showplaceproject.SelectedScreen
-import com.example.showplaceproject.navigation.NavigationItem
-import com.example.showplaceproject.ui.theme.AudioIconColor
-import com.example.showplaceproject.ui.theme.AudioIconColorSecondary
+import com.example.showplaceproject.presentation.SelectedScreen
+import com.example.showplaceproject.presentation.navigation.NavigationItem
+import com.example.showplaceproject.presentation.theme.AudioIconColor
+import com.example.showplaceproject.presentation.theme.AudioIconColorSecondary
 
 
 @Composable

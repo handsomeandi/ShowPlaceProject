@@ -1,11 +1,14 @@
-package com.example.showplaceproject.audio
+package com.example.showplaceproject.presentation.audio
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -14,28 +17,43 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.showplaceproject.R
-import com.example.showplaceproject.SelectedScreen
-import com.example.showplaceproject.bottomnav.ShowPlaceBottomNavigation
 import com.example.showplaceproject.core.AudioWaveform
-import com.example.showplaceproject.ui.theme.*
+import com.example.showplaceproject.core.formatTime
+import com.example.showplaceproject.domain.AudioModel
+import com.example.showplaceproject.presentation.SelectedScreen
+import com.example.showplaceproject.presentation.bottomnav.ShowPlaceBottomNavigation
+import com.example.showplaceproject.presentation.theme.*
 import kotlinx.coroutines.delay
 
 @Composable
 fun AudioScreen(navHostController: NavHostController) {
-    Column(
-    ) {
+    val viewModel: AudioScreenViewModel = hiltViewModel()
+    val audios by viewModel.audio.observeAsState()
+    LaunchedEffect(Unit) {
+        viewModel.init()
+    }
+    Column {
         Text(
             text = "Прослушивайте \nаудио!",
             style = Typography.h1,
-            modifier = Modifier.padding(top = 60.dp, bottom = 33.dp)
+            modifier = Modifier
+                .padding(top = 60.dp, bottom = 33.dp)
                 .padding(horizontal = 24.dp)
         )
-        LazyColumn(modifier = Modifier.fillMaxWidth().weight(1f)
-            .padding(horizontal = 24.dp)) {
-            items(5) { index ->
-                AudioElement("Первые обитатели")
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(horizontal = 24.dp)
+        ) {
+            items(audios?.size ?: 0) { index ->
+                audios?.get(index)?.let {
+                    AudioElement(it)
+                }
+
             }
         }
         ShowPlaceBottomNavigation(SelectedScreen.AUDIO, navHostController)
@@ -46,25 +64,16 @@ fun AudioScreen(navHostController: NavHostController) {
 
 //TODO: make audio element class containing name, duration and audio itself
 @Composable
-fun AudioElement(title: String) {
-    var isPlaying by remember { mutableStateOf(false) }
+fun AudioElement(audio: AudioModel) {
+    val audioPlayer = remember { AudioPlayer(audio.file) }
     var progress by remember { mutableStateOf(0f) }
-
-    LaunchedEffect(isPlaying) {
-        if (isPlaying) {
-            while (progress < 1f) {
-                progress += 0.01f
-                delay(100)
-            }
-            isPlaying = false
-        } else {
-            progress = 0f
-        }
-    }
+    var duration by remember { mutableStateOf(audioPlayer.duration) }
+    var isPlaying by remember { mutableStateOf(false) }
+    isPlaying = audioPlayer.isPlaying()
 
     Column(modifier = Modifier.padding(bottom = 21.dp)) {
         Text(
-            text = title,
+            text = audio.name ?: "",
             style = Typography.body1,
             color = AudioTextColor,
             modifier = Modifier.padding(bottom = 13.dp)
@@ -80,7 +89,19 @@ fun AudioElement(title: String) {
         ) {
             Row() {
                 IconButton(
-                    onClick = { isPlaying = !isPlaying },
+                    onClick = {
+                        if (isPlaying) {
+                            audioPlayer.pauseAudio()
+                        } else {
+                            if (progress > 0) audioPlayer.resumeAudio() else audioPlayer.playAudio(
+                                audio.file ?: "",
+                            ) { current, audioDuration ->
+                                progress = current.toFloat() / audioDuration.toFloat()
+                                duration = audioDuration
+                            }
+                        }
+                        isPlaying = audioPlayer.isPlaying()
+                    },
                     modifier = Modifier.align(CenterVertically)
                 ) {
                     Icon(
@@ -88,7 +109,7 @@ fun AudioElement(title: String) {
                             id = R.drawable.ic_resume
                         ),
                         tint = if (isPlaying) AudioIconColorSecondary else AudioTextColor,
-                        contentDescription = if (isPlaying) "Pause" else "Play"
+                        contentDescription = if (audioPlayer.isPlaying()) "Pause" else "Play"
                     )
                 }
                 AudioWaveform(
@@ -134,8 +155,16 @@ fun AudioElement(title: String) {
 //                        .align(CenterVertically)
 //                )
             }
-            Text(text = "1:21", style = Typography.body2, modifier = Modifier.align(Alignment.End))
+            Text(
+                text = formatTime(duration),
+                style = Typography.body2,
+                modifier = Modifier.align(Alignment.End)
+            )
         }
-
+        DisposableEffect(Unit) {
+            onDispose {
+                audioPlayer.release()
+            }
+        }
     }
 }

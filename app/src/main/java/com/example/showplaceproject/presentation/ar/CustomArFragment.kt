@@ -1,4 +1,4 @@
-package com.example.showplaceproject.ar
+package com.example.showplaceproject.presentation.ar
 
 import com.google.ar.sceneform.ux.ArFragment
 

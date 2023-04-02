@@ -27,3 +27,8 @@ operator fun Float3.unaryMinus() = Float3(-x, -y, -z)
 fun Frame.screenCenter(view: View): Vector3 {
     return Vector3(view.width / 2f, view.height / 2f, 0f)
 }
+fun formatTime(milliseconds: Int): String {
+    val minutes = (milliseconds / 1000) / 60
+    val seconds = (milliseconds / 1000) % 60
+    return "$minutes:$seconds"
+}
