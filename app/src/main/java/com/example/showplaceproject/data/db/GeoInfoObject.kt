@@ -19,23 +19,23 @@ class GeoInfoObject : RealmObject {
 }
 
 class TextObject: EmbeddedRealmObject {
-    lateinit var id: String
-    lateinit var name: String
-    lateinit var content: String
+    var id: String = ""
+    var name: String = ""
+    var content: String = ""
 }
 
 class PhotoObject: EmbeddedRealmObject {
-    lateinit var id: String
-    lateinit var name: String
-    lateinit var file: String
+    var id: String = ""
+    var name: String = ""
+    var file: String = ""
 }
 
 class MetadataObject: EmbeddedRealmObject {
-    var total by Delegates.notNull<Int>()
+    var total = 0
 }
 
 class ArModelObject: EmbeddedRealmObject {
-    var id by Delegates.notNull<Int>()
+    var id = -1
     var name: String? = null
     var file: String? = null
     var longitude: Double? = null
@@ -44,7 +44,7 @@ class ArModelObject: EmbeddedRealmObject {
 
 
 class AudioObject: EmbeddedRealmObject {
-    var id by Delegates.notNull<Int>()
+    var id = -1
     var name: String? = null
     var file: String? = null
     var longitude: Double? = null

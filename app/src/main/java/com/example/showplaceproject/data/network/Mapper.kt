@@ -6,7 +6,7 @@ import com.example.showplaceproject.domain.*
 import io.realm.kotlin.ext.toRealmList
 
 object Mapper {
-    fun InfoResponseEntity.toModel() = InfoResponseModel(
+    fun InfoResponseEntity.toModel() = GeoInfoModel(
         models = this.models?.map {
             it.toModel()
         },
@@ -54,7 +54,7 @@ object Mapper {
         total = this.total
     )
     //////
-    fun GeoInfoObject.toModel() = InfoResponseModel(
+    fun GeoInfoObject.toModel() = GeoInfoModel(
         models = this.models?.map {
             it.toModel()
         },
@@ -101,7 +101,7 @@ object Mapper {
     private fun MetadataObject.toModel() = MetadataModel(
         total = this.total
     )
-    fun InfoResponseModel.toDbObject() = GeoInfoObject().apply {
+    fun GeoInfoModel.toDbObject() = GeoInfoObject().apply {
         models = this@toDbObject.models?.map {
             it.toDbObject()
         }?.toRealmList()

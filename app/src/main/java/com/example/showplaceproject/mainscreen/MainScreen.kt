@@ -2,13 +2,13 @@ package com.example.showplaceproject.mainscreen
 
 import android.content.Context
 import android.net.Uri
-import android.view.View
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavHostController
 import com.example.showplaceproject.R
@@ -23,7 +24,6 @@ import com.example.showplaceproject.SelectedScreen
 import com.example.showplaceproject.ar.ArCoreView
 import com.example.showplaceproject.bottomnav.ShowPlaceBottomNavigation
 import com.example.showplaceproject.core.screenCenter
-import com.google.ar.core.Frame
 import com.google.ar.core.Plane
 import com.google.ar.core.Pose
 import com.google.ar.core.TrackingState
@@ -34,21 +34,25 @@ import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 
-private var isModelAdded: Boolean = false
-val model: MutableLiveData<ModelRenderable> = MutableLiveData()
 
 @Composable
 fun MainScreen(navHostController: NavHostController) {
-
-
+    val viewModel: MainScreenViewModel = hiltViewModel()
+    val modelObject by viewModel.model.observeAsState()
+    val geoObject by viewModel.geoModel.observeAsState()
+    val context = LocalContext.current
+    LaunchedEffect(geoObject) {
+        viewModel.init()
+        getModelForExercise(context, viewModel.model, geoObject?.models?.first()?.file)
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        val modelObject by model.observeAsState()
         modelObject?.let {
             ArCoreView(
                 model = it,
+                viewModel = viewModel,
                 onUpdateListener = ::onUpdate
             )
         }
@@ -100,7 +104,8 @@ fun MainScreen(navHostController: NavHostController) {
 private fun onUpdate(
     frameTime: FrameTime?,
     fragment: ArFragment,
-    modelRenderable: ModelRenderable
+    modelRenderable: ModelRenderable,
+    viewModel: MainScreenViewModel
 ) {
     //get the frame from the scene for shorthand
     val frame = fragment.arSceneView.arFrame
@@ -125,7 +130,7 @@ private fun onUpdate(
                     //iterate through all hits
                     val hitTestIterator = hitTest.iterator()
                     while (hitTestIterator.hasNext()) {
-                        if (isModelAdded) break
+                        if (viewModel.isModelAdded() == true) break
                         val hitResult = hitTestIterator.next()
 
                         //Create an anchor at the plane hit
@@ -146,7 +151,7 @@ private fun onUpdate(
                             modelAnchor.pose.compose(Pose.makeTranslation(0f, 0.05f, 0f)).ty(),
                             modelAnchor.pose.tz()
                         )
-                        isModelAdded = true
+                        viewModel.changeModelAdded( true)
                     }
                 }
             }
@@ -155,7 +160,7 @@ private fun onUpdate(
 }
 
 
-fun getModelForExercise(context: Context, model: MutableLiveData<ModelRenderable>, nameModel: String) {
+fun getModelForExercise(context: Context, model: MutableLiveData<ModelRenderable>, nameModel: String?) {
     ModelRenderable.builder()
         .setSource(context, Uri.parse(nameModel))
         .setIsFilamentGltf(true)

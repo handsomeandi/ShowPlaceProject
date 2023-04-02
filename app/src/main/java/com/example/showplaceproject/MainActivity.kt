@@ -7,7 +7,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -15,12 +14,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.showplaceproject.audio.AudioScreen
 import com.example.showplaceproject.mainscreen.MainScreen
-import com.example.showplaceproject.mainscreen.getModelForExercise
-import com.example.showplaceproject.mainscreen.model
 import com.example.showplaceproject.navigation.NavigationItem
 import com.example.showplaceproject.ui.theme.ShowPlaceProjectTheme
+import dagger.hilt.android.AndroidEntryPoint
 
 //TODO: make possible to open obj and types other than glb
+@AndroidEntryPoint
 class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,13 +35,6 @@ class MainActivity : FragmentActivity() {
                 }
             }
         }
-        val uri =
-//            "test.obj"
-//            "test.glb"
-            "https://github.com/google/model-viewer/blob/master/packages/shared-assets/models/Astronaut.glb?raw=true"
-//            "https://github.com/eduter/sokobot-3d/raw/master/public/3d-models/robot.glb"
-//            "https://github.com/KhronosGroup/glTF-Sample-Models/blob/master/1.0/Box/glTF/Box.gltf"
-        getModelForExercise(this, model, uri)
 
     }
 

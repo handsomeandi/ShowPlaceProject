@@ -1,6 +1,6 @@
 package com.example.showplaceproject.domain
 
-data class InfoResponseModel(
+data class GeoInfoModel(
     val models: List<ArModelModel>? = null,
     val audio: List<AudioModel>? = null,
     val text: List<TextModel>,

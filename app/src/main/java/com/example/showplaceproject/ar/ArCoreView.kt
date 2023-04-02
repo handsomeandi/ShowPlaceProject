@@ -4,7 +4,9 @@ package com.example.showplaceproject.ar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidViewBinding
+import androidx.lifecycle.ViewModel
 import com.example.showplaceproject.databinding.ArCoreLayoutBinding
+import com.example.showplaceproject.mainscreen.MainScreenViewModel
 import com.google.ar.sceneform.FrameTime
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.ArFragment
@@ -14,7 +16,8 @@ import com.google.ar.sceneform.ux.ArFragment
 fun ArCoreView(
     model: ModelRenderable,
     modifier: Modifier = Modifier,
-    onUpdateListener: (FrameTime?, ArFragment, ModelRenderable) -> Unit
+    viewModel: MainScreenViewModel,
+    onUpdateListener: (FrameTime?, ArFragment, ModelRenderable, MainScreenViewModel) -> Unit
 ) {
 
     AndroidViewBinding(
@@ -23,7 +26,7 @@ fun ArCoreView(
         update = {
             val arFragment = fragmentContainerView.getFragment<ArFragment>()
             arFragment.arSceneView.scene.addOnUpdateListener { frameTime ->
-                onUpdateListener(frameTime, arFragment, model)
+                onUpdateListener(frameTime, arFragment, model, viewModel)
             }
         }
     )
