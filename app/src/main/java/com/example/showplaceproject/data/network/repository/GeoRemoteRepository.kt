@@ -5,7 +5,7 @@ import com.example.showplaceproject.data.network.datasource.GeoRemoteDataSource
 import com.example.showplaceproject.domain.InfoResponseModel
 import javax.inject.Inject
 
-class GeoRepository @Inject constructor(
+class GeoRemoteRepository @Inject constructor(
     private val remoteDataSource: GeoRemoteDataSource
 ) {
     suspend fun getGeoData(lat: Double, lng: Double): InfoResponseModel {

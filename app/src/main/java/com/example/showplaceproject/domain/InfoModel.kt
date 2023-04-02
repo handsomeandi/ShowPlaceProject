@@ -5,7 +5,7 @@ data class InfoResponseModel(
     val audio: List<AudioModel>? = null,
     val text: List<TextModel>,
     val photos: List<PhotoModel>,
-    val metadata: MetadataModel
+    val metadata: MetadataModel?
 )
 
 data class TextModel(
