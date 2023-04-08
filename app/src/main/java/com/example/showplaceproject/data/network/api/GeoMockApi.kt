@@ -35,7 +35,7 @@ class GeoMockApi : GeoApi {
         val mockAudioEntity = AudioEntity(
             id = 1,
             name = "Audio 1",
-            file = "https://file-examples.com/storage/fe9278ad7f642dbd39ac5c9/2017/11/file_example_MP3_700KB.mp3",
+            file = "https://github.com/SergLam/Audio-Sample-files/raw/master/sample.mp3",
             longitude = 12.34,
             latitude = 56.78
         )

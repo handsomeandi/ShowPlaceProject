@@ -64,7 +64,7 @@ fun PhotosScreen(photos: List<String>) {
                     painter = rememberImagePainter(
                         data = selectedPhoto,
                     ),
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.Inside,
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxSize(0.9f)

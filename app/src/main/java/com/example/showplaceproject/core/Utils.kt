@@ -65,5 +65,5 @@ fun Frame.screenCenter(view: View): Vector3 {
 fun formatTime(milliseconds: Long): String {
     val minutes = (milliseconds / 1000) / 60
     val seconds = (milliseconds / 1000) % 60
-    return "$minutes:$seconds"
+    return if (seconds >= 10) "$minutes:$seconds" else "$minutes:0$seconds"
 }

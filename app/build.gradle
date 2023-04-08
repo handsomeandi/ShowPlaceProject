@@ -116,6 +116,5 @@ dependencies {
     implementation "androidx.media3:media3-ui:$mediaVersion"
     implementation "androidx.media3:media3-exoplayer-dash:$mediaVersion"
 
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
 
 }

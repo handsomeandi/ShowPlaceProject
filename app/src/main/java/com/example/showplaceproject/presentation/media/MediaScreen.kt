@@ -42,11 +42,11 @@ import com.google.gson.Gson
 @Composable
 fun MediaScreen(navHostController: NavHostController) {
     val photoUrls = listOf(
-        "https://sun9-67.userapi.com/impg/B4LVU2JfWJK9bKXrHXiIrabjAjCYt5v0iv9JXA/4hnQR0FdSOg.jpg?size=1439x2160&quality=95&sign=ba9c48676e3e007b12ebb73f9972979a&type=album",
-        "https://sun6-22.userapi.com/impg/GfG1MleN1rG7QJFsLiN87jCkafGjbTQ5bGFc-w/CuTZWy2NfiE.jpg?size=2560x2560&quality=95&sign=00f59e4134e97de60e776fec4b09971a&type=album",
-        "https://sun9-29.userapi.com/impg/c858520/v858520570/d392f/C1kM5naR-h0.jpg?size=1104x1104&quality=96&sign=f7ab099258ed3dbbe815afd7aa3f5c86&type=album",
-        "https://sun9-19.userapi.com/impg/tmZlwuDZAuSPZ6cddEvVmXUZtklqv03V1kHj3Q/SrfR2cighmU.jpg?size=900x1600&quality=96&sign=e4137baf608f943c8369acae5bbf1dfb&type=album",
-        "https://sun9-42.userapi.com/impg/igDKlf7VmLQn6mnWC-ExC6dUiKCqWNeuryNd8A/lmHpw0v0Pj0.jpg?size=1220x2160&quality=95&sign=28e392fde40e1df8067b452c7bb27d71&type=album",
+        "https://public.blenderkit.com/thumbnails/assets/9190a0dd661e4ca5a389a88563fc0602/files/thumbnail_ecc14c90-3fa6-45bd-914a-fd5f276f932d.jpg.256x256_q85_crop-%2C.jpg",
+        "https://res.cloudinary.com/featureupvote/image/upload/f_auto/T_CaveBase1_Preview_UI_qtpa0l.png",
+        "https://res.cloudinary.com/featureupvote/image/upload/f_auto/T_CaveBase1_Preview_UI_qtpa0l.png",
+        "https://res.cloudinary.com/featureupvote/image/upload/f_auto/T_CaveBase1_Preview_UI_qtpa0l.png",
+        "https://i0.wp.com/alpshiking.swisshikingvacations.com/wp-content/uploads/2019/11/Postojna.flicker.jpg?fit=1024%2C683&ssl=1",
     )
 
     val videoUrls = listOf(

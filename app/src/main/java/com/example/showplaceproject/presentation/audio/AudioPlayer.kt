@@ -14,7 +14,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
-class AudioPlayer(context: Context, url: String? = null) {
+class AudioPlayer(context: Context, url: String? = null, onAudioLoaded: () -> Unit) {
     private var mediaPlayer: ExoPlayer? = null
     private var isPlaying = false
     private var progress: Long = 0
@@ -22,12 +22,14 @@ class AudioPlayer(context: Context, url: String? = null) {
 
     }
 
+    val isLoaded: MutableLiveData<Boolean> = MutableLiveData(false)
+
     var duration: MutableLiveData<Long> = MutableLiveData(0)
 
     init {
         if (mediaPlayer == null) {
             val httpDataSourceFactory: HttpDataSource.Factory =
-            DefaultHttpDataSource.Factory().setAllowCrossProtocolRedirects(false)
+                DefaultHttpDataSource.Factory().setAllowCrossProtocolRedirects(false)
             val dataSourceFactory: DataSource.Factory = DataSource.Factory {
                 val dataSource = httpDataSourceFactory.createDataSource()
                 dataSource.setRequestProperty(
@@ -48,11 +50,12 @@ class AudioPlayer(context: Context, url: String? = null) {
             mediaPlayer?.setMediaItem(mediaItem)
             mediaPlayer?.playWhenReady = false
             mediaPlayer?.prepare()
-            mediaPlayer?.addListener (object: Player.Listener {
+            mediaPlayer?.addListener(object : Player.Listener {
                 override fun onPlaybackStateChanged(playbackState: Int) {
                     super.onPlaybackStateChanged(playbackState)
                     if (playbackState === Player.STATE_READY) {
                         duration.value = mediaPlayer?.duration ?: 0
+                        onAudioLoaded()
                     }
                 }
             })
@@ -114,7 +117,7 @@ class AudioPlayer(context: Context, url: String? = null) {
                     onProgressUpdate(progress, duration)
                     handler.postDelayed(this, 100)
                 }
-                if(duration - progress < 1000) {
+                if (duration - progress < 1000) {
                     mediaPlayer?.stop()
                     release()
                     onProgressUpdate(progress, duration)
