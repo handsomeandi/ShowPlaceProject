@@ -1,10 +1,7 @@
 package com.example.showplaceproject.presentation.audio
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
@@ -55,19 +52,19 @@ fun AudioScreen(navHostController: NavHostController) {
                 .padding(horizontal = 24.dp)
         )
         Box(modifier = Modifier.weight(1f)) {
-            LazyColumn(
+            val scrollState = rememberScrollState()
+            Column(
                 modifier = Modifier
+                    .verticalScroll(scrollState)
                     .fillMaxWidth()
-                    .focusable(enabled = false)
                     .padding(horizontal = 24.dp)
             ) {
-                items(audios?.size ?: 0) { index ->
-                    audios?.get(index)?.let {
-                        AudioElement(it) {
+                audios?.let {
+                    for (audio in it) {
+                        AudioElement(audio) {
                             numberOfLoaded++
                         }
                     }
-
                 }
             }
             if (numberOfLoaded != audios?.size) {
