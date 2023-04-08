@@ -121,12 +121,11 @@ fun ShowPlaceBottomNavigation(
                             .align(CenterHorizontally)
                             .padding(vertical = 30.dp, horizontal = 70.dp)
                             .shadow(40.dp, clip = true)
-                            .offset(y = (2).dp),
                     ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_audio),
                             contentDescription = "Icon 1",
-                            tint = AudioIconColor,
+                            tint = if (selectedScreen == SelectedScreen.AUDIO) AudioIconColor else AudioIconColorSecondary,
                             modifier = Modifier
                                 .clickable {
                                     if (selectedScreen != SelectedScreen.AUDIO) {
@@ -159,7 +158,7 @@ fun ShowPlaceBottomNavigation(
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_media),
                             contentDescription = "Icon 3",
-                            tint = AudioIconColorSecondary,
+                            tint = if (selectedScreen == SelectedScreen.MEDIA) AudioIconColor else AudioIconColorSecondary,
                             modifier = Modifier
                                 .clickable {
                                     if (selectedScreen != SelectedScreen.MEDIA) {
@@ -179,7 +178,6 @@ fun ShowPlaceBottomNavigation(
 
         }
         SelectedScreen.MAP -> TODO()
-        SelectedScreen.MEDIA -> TODO()
     }
 
 }

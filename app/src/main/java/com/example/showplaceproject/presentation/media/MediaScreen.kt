@@ -3,9 +3,7 @@ package com.example.showplaceproject.presentation.media
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.widget.VideoView
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -16,13 +14,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.media3.common.MediaItem
+import androidx.media3.datasource.DataSource
+import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.datasource.HttpDataSource
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.ui.PlayerView
 import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.example.showplaceproject.R
+import com.example.showplaceproject.presentation.SelectedScreen
+import com.example.showplaceproject.presentation.bottomnav.ShowPlaceBottomNavigation
 import com.example.showplaceproject.presentation.navigation.NavigationItem
 import com.example.showplaceproject.presentation.theme.Typography
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -42,26 +50,44 @@ fun MediaScreen(navHostController: NavHostController) {
     )
 
     val videoUrls = listOf(
-        "https://file-examples.com/storage/fe9278ad7f642dbd39ac5c9/2017/04/file_example_MP4_480_1_5MG.mp4",
-        "https://file-examples.com/storage/fe9278ad7f642dbd39ac5c9/2017/04/file_example_MP4_480_1_5MG.mp4",
-        "https://file-examples.com/storage/fe9278ad7f642dbd39ac5c9/2017/04/file_example_MP4_480_1_5MG.mp4",
-        "https://file-examples.com/storage/fe9278ad7f642dbd39ac5c9/2017/04/file_example_MP4_480_1_5MG.mp4",
-        "https://file-examples.com/storage/fe9278ad7f642dbd39ac5c9/2017/04/file_example_MP4_480_1_5MG.mp4",
+        "https://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4",
+        "https://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4",
+        "https://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4",
+        "https://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4",
+        "https://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4",
     )
+
     Column {
-        Title("Фотографии") {
-            val gson = Gson()
-            val photos = gson.toJson(photoUrls)
-            navHostController.navigate("${NavigationItem.Photo.route}?photos=$photos")
-        }
-        ViewPagerWithPhotos(photoUrls)
-        Title("Видео") {
+        val scrollState = rememberScrollState()
+        Column(
+            modifier = Modifier
+                .verticalScroll(scrollState)
+                .weight(1f)
+        ) {
+            Text(
+                text = "Изучайте все \nматериалы!",
+                style = Typography.h1,
+                modifier = Modifier
+                    .padding(top = 60.dp, bottom = 2.dp)
+                    .padding(horizontal = 24.dp)
+            )
+            Title("Фотографии") {
+                val gson = Gson()
+                val photos = gson.toJson(photoUrls)
+                navHostController.navigate("${NavigationItem.Photo.route}?photos=$photos")
+            }
+            ViewPagerWithPhotos(photoUrls)
+            Title("Видео") {
+                val gson = Gson()
+                val videos = gson.toJson(videoUrls)
+                navHostController.navigate("${NavigationItem.Video.route}?videos=$videos")
+            }
+            ViewPagerWithVideos(videoUrls)
+            Title("Файлы") {
 
+            }
         }
-        ViewPagerWithVideos(videoUrls)
-        Title("Файлы") {
-
-        }
+        ShowPlaceBottomNavigation(SelectedScreen.MEDIA, navHostController)
     }
 }
 
@@ -72,7 +98,7 @@ private fun Title(title: String, clickListener: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .padding(top = 60.dp, bottom = 33.dp)
+            .padding(top = 22.dp, bottom = 33.dp)
     ) {
         Text(
             text = title,
@@ -124,8 +150,13 @@ private fun ViewPagerWithVideos(videoUrls: List<String>) {
                     .fillMaxWidth()
             ) { page ->
                 VideoPlayer(
-                    Uri.parse(videoUrls[page])
-                )
+                    Uri.parse(videoUrls[page]),
+                    Modifier
+                        .width(299.dp)
+                        .aspectRatio(1.6f)
+                        .height(193.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                ) {}
             }
 
         }
@@ -133,15 +164,11 @@ private fun ViewPagerWithVideos(videoUrls: List<String>) {
 }
 
 @Composable
-fun VideoPlayer(uri: Uri) {
+fun VideoPlayer(uri: Uri, modifier: Modifier, onClick: () -> Unit) {
     var isPlaying by remember { mutableStateOf(false) }
 
     Box(
-        modifier = Modifier
-            .width(299.dp)
-            .aspectRatio(1.6f)
-            .height(193.dp)
-            .clip(RoundedCornerShape(12.dp))
+        modifier = modifier
             .background(Color.Black)
     ) {
         AndroidView(
@@ -157,11 +184,7 @@ fun VideoPlayer(uri: Uri) {
                     view.pause()
                 }
             },
-            modifier = Modifier
-                .width(299.dp)
-                .aspectRatio(1.6f)
-                .height(193.dp)
-                .clip(RoundedCornerShape(12.dp))
+            modifier = modifier
         )
 
         // Add a button to play/pause the video
@@ -169,11 +192,62 @@ fun VideoPlayer(uri: Uri) {
             contentDescription = "play button",
             modifier = Modifier
                 .align(Alignment.Center)
-                .clickable { isPlaying = !isPlaying })
+                .clickable {
+                    onClick()
+                    isPlaying = !isPlaying
+                })
     }
 
 }
 
+
+@Composable
+@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+fun FullVideoPlayer(uri: String, modifier: Modifier) {
+    val httpDataSourceFactory: HttpDataSource.Factory =
+        DefaultHttpDataSource.Factory().setAllowCrossProtocolRedirects(false)
+    val dataSourceFactory: DataSource.Factory = DataSource.Factory {
+        val dataSource = httpDataSourceFactory.createDataSource()
+        dataSource.setRequestProperty(
+            "cookie", "cookieValue"
+        )
+        dataSource.setRequestProperty("Range", "1-10000")
+        dataSource
+    }
+
+    val mContext = LocalContext.current
+    // Initializing ExoPLayer
+    val mExoPlayer = remember(mContext) {
+        ExoPlayer.Builder(mContext)
+            .setMediaSourceFactory(DefaultMediaSourceFactory(dataSourceFactory)).build().apply {
+
+                val mediaItem = MediaItem.Builder()
+                    .setUri(Uri.parse(uri))
+                    .build()
+                setMediaItem(mediaItem)
+                playWhenReady = false
+                prepare()
+
+            }
+
+    }
+
+    DisposableEffect(
+        // Implementing ExoPlayer
+        AndroidView(
+            factory = { context ->
+                PlayerView(context).apply {
+                    player = mExoPlayer
+                }
+            },
+            modifier = modifier
+        )
+    ) {
+        onDispose {
+            mExoPlayer.release()
+        }
+    }
+}
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalPagerApi::class)

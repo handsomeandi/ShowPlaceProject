@@ -61,7 +61,7 @@ fun AudioScreen(navHostController: NavHostController) {
 }
 
 
-//TODO: make audio element class containing name, duration and audio itself
+//TODO: make fast-forwarding
 @Composable
 fun AudioElement(audio: AudioModel) {
     val audioPlayer = remember { AudioPlayer(audio.file) }

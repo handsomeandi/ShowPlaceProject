@@ -19,6 +19,7 @@ import com.example.showplaceproject.presentation.audio.AudioScreen
 import com.example.showplaceproject.presentation.mainscreen.MainScreen
 import com.example.showplaceproject.presentation.media.MediaScreen
 import com.example.showplaceproject.presentation.media.photo.PhotosScreen
+import com.example.showplaceproject.presentation.media.videos.VideosScreen
 import com.example.showplaceproject.presentation.navigation.NavigationItem
 import com.example.showplaceproject.presentation.theme.ShowPlaceProjectTheme
 import com.google.gson.Gson
@@ -75,6 +76,20 @@ class MainActivity : FragmentActivity() {
                         object : TypeToken<List<String>>() {}.type
                     )
                     PhotosScreen(photos = list)
+                }
+                composable("${NavigationItem.Video.route}?videos={videos}",
+                    arguments = listOf(
+                        navArgument("videos") {
+                            type = NavType.StringType
+                            defaultValue = "[]"
+                        }
+                    )) { from ->
+                    val gson = Gson()
+                    val list: List<String> = gson.fromJson(
+                        from.arguments?.getString("videos"),
+                        object : TypeToken<List<String>>() {}.type
+                    )
+                    VideosScreen(videos = list)
                 }
             }
 
