@@ -20,13 +20,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.showplaceproject.R
-import com.example.showplaceproject.core.AudioWaveform
 import com.example.showplaceproject.core.formatTime
 import com.example.showplaceproject.domain.AudioModel
+import com.example.showplaceproject.presentation.AudioWaveform
 import com.example.showplaceproject.presentation.SelectedScreen
 import com.example.showplaceproject.presentation.bottomnav.ShowPlaceBottomNavigation
 import com.example.showplaceproject.presentation.theme.*
-import kotlinx.coroutines.delay
 
 @Composable
 fun AudioScreen(navHostController: NavHostController) {
@@ -87,7 +86,7 @@ fun AudioElement(audio: AudioModel) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Row() {
+            Row {
                 IconButton(
                     onClick = {
                         if (isPlaying) {

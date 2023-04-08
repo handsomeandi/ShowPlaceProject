@@ -54,10 +54,12 @@ fun ShowPlaceBottomNavigation(
                     contentDescription = "Bottom Left Image",
                     modifier = Modifier
                         .clickable {
-                            navHostController.navigate(NavigationItem.Audio.route){
+                            navHostController.navigate(NavigationItem.Audio.route) {
                                 popUpTo(NavigationItem.Audio.route) {
                                     inclusive = true
                                 }
+                                launchSingleTop = true
+                                restoreState = true
                             }
                         }
                         .constrainAs(createRef()) {
@@ -88,10 +90,19 @@ fun ShowPlaceBottomNavigation(
                             top.linkTo(backgroundImage.top)
                             bottom.linkTo(backgroundImage.bottom)
                         }
+                        .clickable {
+                            navHostController.navigate(NavigationItem.Media.route) {
+                                popUpTo(NavigationItem.Media.route) {
+                                    inclusive = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
                 )
             }
         }
-        SelectedScreen.AUDIO -> {
+        SelectedScreen.AUDIO, SelectedScreen.MEDIA -> {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -116,6 +127,18 @@ fun ShowPlaceBottomNavigation(
                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_audio),
                             contentDescription = "Icon 1",
                             tint = AudioIconColor,
+                            modifier = Modifier
+                                .clickable {
+                                    if (selectedScreen != SelectedScreen.AUDIO) {
+                                        navHostController.navigate(NavigationItem.Audio.route) {
+                                            popUpTo(NavigationItem.Audio.route) {
+                                                inclusive = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                    }
+                                }
                         )
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_camera),
@@ -127,6 +150,8 @@ fun ShowPlaceBottomNavigation(
                                         popUpTo(NavigationItem.Main.route) {
                                             inclusive = true
                                         }
+                                        launchSingleTop = true
+                                        restoreState = true
                                     }
                                 },
                             tint = AudioIconColorSecondary,
@@ -135,6 +160,18 @@ fun ShowPlaceBottomNavigation(
                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_media),
                             contentDescription = "Icon 3",
                             tint = AudioIconColorSecondary,
+                            modifier = Modifier
+                                .clickable {
+                                    if (selectedScreen != SelectedScreen.MEDIA) {
+                                        navHostController.navigate(NavigationItem.Media.route) {
+                                            popUpTo(NavigationItem.Media.route) {
+                                                inclusive = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                    }
+                                }
                         )
                     }
                 }

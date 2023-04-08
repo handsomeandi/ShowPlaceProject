@@ -1,4 +1,5 @@
-package com.example.showplaceproject.core
+package com.example.showplaceproject.presentation
+
 import android.view.MotionEvent
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.animateFloatAsState
@@ -57,8 +58,10 @@ fun AudioWaveform(
 ) {
     val _progress = remember(progress) { progress.coerceIn(MinProgress, MaxProgress) }
     val _spikeWidth = remember(spikeWidth) { spikeWidth.coerceIn(MinSpikeWidthDp, MaxSpikeWidthDp) }
-    val _spikePadding = remember(spikePadding) { spikePadding.coerceIn(MinSpikePaddingDp, MaxSpikePaddingDp) }
-    val _spikeRadius = remember(spikeRadius) { spikeRadius.coerceIn(MinSpikeRadiusDp, MaxSpikeRadiusDp) }
+    val _spikePadding =
+        remember(spikePadding) { spikePadding.coerceIn(MinSpikePaddingDp, MaxSpikePaddingDp) }
+    val _spikeRadius =
+        remember(spikeRadius) { spikeRadius.coerceIn(MinSpikeRadiusDp, MaxSpikeRadiusDp) }
     val _spikeTotalWidth = remember(spikeWidth, spikePadding) { _spikeWidth + _spikePadding }
     var canvasSize by remember { mutableStateOf(Size(0f, 0f)) }
     var spikes by remember { mutableStateOf(0F) }
@@ -100,7 +103,7 @@ fun AudioWaveform(
                 brush = waveformBrush,
                 topLeft = Offset(
                     x = index * _spikeTotalWidth.toPx(),
-                    y = when(waveformAlignment) {
+                    y = when (waveformAlignment) {
                         WaveformAlignment.Top -> 0F
                         WaveformAlignment.Bottom -> size.height - amplitude
                         WaveformAlignment.Center -> size.height / 2F - amplitude / 2F
@@ -132,11 +135,11 @@ private fun List<Int>.toDrawableAmplitudes(
     maxHeight: Float
 ): List<Float> {
     val amplitudes = map(Int::toFloat)
-    if(amplitudes.isEmpty() || spikes == 0) {
+    if (amplitudes.isEmpty() || spikes == 0) {
         return List(spikes) { minHeight }
     }
     val transform = { data: List<Float> ->
-        when(amplitudeType) {
+        when (amplitudeType) {
             AmplitudeType.Avg -> data.average()
             AmplitudeType.Max -> data.max()
             AmplitudeType.Min -> data.min()
@@ -168,9 +171,9 @@ internal fun <T> Iterable<T>.chunkToSize(size: Int, transform: (List<T>) -> T): 
 }
 
 internal fun Iterable<Float>.normalize(min: Float, max: Float): List<Float> {
-    return map { (max-min) * ((it - min()) / (max() - min())) + min }
+    return map { (max - min) * ((it - min()) / (max() - min())) + min }
 }
 
 private fun Int.safeDiv(value: Int): Float {
-    return if(value == 0) return 0F else this / value.toFloat()
+    return if (value == 0) return 0F else this / value.toFloat()
 }
