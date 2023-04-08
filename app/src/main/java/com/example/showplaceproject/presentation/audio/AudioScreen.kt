@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -64,9 +65,10 @@ fun AudioScreen(navHostController: NavHostController) {
 //TODO: make fast-forwarding
 @Composable
 fun AudioElement(audio: AudioModel) {
-    val audioPlayer = remember { AudioPlayer(audio.file) }
+    val context = LocalContext.current
+    val audioPlayer = remember { AudioPlayer(context, audio.file) }
     var progress by remember { mutableStateOf(0f) }
-    var duration by remember { mutableStateOf(audioPlayer.duration) }
+    val duration by audioPlayer.duration.observeAsState()
     var isPlaying by remember { mutableStateOf(false) }
     isPlaying = audioPlayer.isPlaying()
 
@@ -96,7 +98,6 @@ fun AudioElement(audio: AudioModel) {
                                 audio.file ?: "",
                             ) { current, audioDuration ->
                                 progress = current.toFloat() / audioDuration.toFloat()
-                                duration = audioDuration
                             }
                         }
                         isPlaying = audioPlayer.isPlaying()
@@ -155,7 +156,7 @@ fun AudioElement(audio: AudioModel) {
 //                )
             }
             Text(
-                text = formatTime(duration),
+                text = formatTime(duration ?: 0),
                 style = Typography.body2,
                 modifier = Modifier.align(Alignment.End)
             )

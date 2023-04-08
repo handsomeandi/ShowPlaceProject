@@ -14,7 +14,7 @@ import com.google.ar.sceneform.ux.ArFragment
 
 @Composable
 fun ArCoreView(
-    model: ModelRenderable,
+    model: ModelRenderable?,
     modifier: Modifier = Modifier,
     viewModel: MainScreenViewModel,
     onUpdateListener: (FrameTime?, ArFragment, ModelRenderable, MainScreenViewModel) -> Unit
@@ -26,7 +26,9 @@ fun ArCoreView(
         update = {
             val arFragment = fragmentContainerView.getFragment<ArFragment>()
             arFragment.arSceneView.scene.addOnUpdateListener { frameTime ->
-                onUpdateListener(frameTime, arFragment, model, viewModel)
+                model?.let {
+                    onUpdateListener(frameTime, arFragment, model, viewModel)
+                }
             }
         }
     )

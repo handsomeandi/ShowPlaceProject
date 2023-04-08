@@ -20,10 +20,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavHostController
 import com.example.showplaceproject.R
+import com.example.showplaceproject.core.screenCenter
 import com.example.showplaceproject.presentation.SelectedScreen
 import com.example.showplaceproject.presentation.ar.ArCoreView
 import com.example.showplaceproject.presentation.bottomnav.ShowPlaceBottomNavigation
-import com.example.showplaceproject.core.screenCenter
 import com.google.ar.core.Plane
 import com.google.ar.core.Pose
 import com.google.ar.core.TrackingState
@@ -49,14 +49,11 @@ fun MainScreen(navHostController: NavHostController) {
         modifier = Modifier
             .fillMaxSize()
     ) {
-        modelObject?.let {
-            ArCoreView(
-                model = it,
-                viewModel = viewModel,
-                onUpdateListener = ::onUpdate
-            )
-        }
-
+        ArCoreView(
+            model = modelObject,
+            viewModel = viewModel,
+            onUpdateListener = ::onUpdate
+        )
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
             val centerImage = createRef()
             Image(
@@ -125,7 +122,10 @@ private fun onUpdate(
                 //place the first object only if no previous anchors were added
                 if (!iterableAnchor.hasNext()) {
                     //Perform a hit test at the center of the screen to place an object without tapping
-                    val hitTest = frame.hitTest(frame.screenCenter(fragment.requireView()).x, frame.screenCenter(fragment.requireView()).y)
+                    val hitTest = frame.hitTest(
+                        frame.screenCenter(fragment.requireView()).x,
+                        frame.screenCenter(fragment.requireView()).y
+                    )
 
                     //iterate through all hits
                     val hitTestIterator = hitTest.iterator()
@@ -151,7 +151,7 @@ private fun onUpdate(
                             modelAnchor.pose.compose(Pose.makeTranslation(0f, 0.05f, 0f)).ty(),
                             modelAnchor.pose.tz()
                         )
-                        viewModel.changeModelAdded( true)
+                        viewModel.changeModelAdded(true)
                     }
                 }
             }
@@ -160,7 +160,11 @@ private fun onUpdate(
 }
 
 
-fun getModelForExercise(context: Context, model: MutableLiveData<ModelRenderable>, nameModel: String?) {
+fun getModelForExercise(
+    context: Context,
+    model: MutableLiveData<ModelRenderable>,
+    nameModel: String?
+) {
     ModelRenderable.builder()
         .setSource(context, Uri.parse(nameModel))
         .setIsFilamentGltf(true)
