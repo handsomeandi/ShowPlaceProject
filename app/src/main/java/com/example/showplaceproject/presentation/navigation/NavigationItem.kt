@@ -6,6 +6,7 @@ sealed class NavigationItem(var route: String) {
     object MediaMain : NavigationItem("mediaMain")
     object Photo : NavigationItem("photo")
     object Video : NavigationItem("video")
+    object Text : NavigationItem("text")
     object Audio : NavigationItem("audio")
     object Map : NavigationItem("map")
 }

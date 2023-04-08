@@ -84,7 +84,7 @@ fun MediaScreen(navHostController: NavHostController) {
             }
             ViewPagerWithVideos(videoUrls)
             Title("Файлы") {
-
+                navHostController.navigate(NavigationItem.Text.route)
             }
         }
         ShowPlaceBottomNavigation(SelectedScreen.MEDIA, navHostController)
