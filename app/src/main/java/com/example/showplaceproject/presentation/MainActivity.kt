@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.showplaceproject.presentation.audio.AudioScreen
 import com.example.showplaceproject.presentation.mainscreen.MainScreen
+import com.example.showplaceproject.presentation.map.MapScreen
 import com.example.showplaceproject.presentation.media.MediaScreen
 import com.example.showplaceproject.presentation.media.photo.PhotosScreen
 import com.example.showplaceproject.presentation.media.text.TextScreen
@@ -25,6 +26,7 @@ import com.example.showplaceproject.presentation.navigation.NavigationItem
 import com.example.showplaceproject.presentation.theme.ShowPlaceProjectTheme
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.yandex.mapkit.MapKitFactory
 import dagger.hilt.android.AndroidEntryPoint
 
 //TODO: make possible to open obj and types other than glb
@@ -33,6 +35,7 @@ class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MapKitFactory.initialize(this);
         setContent {
             ShowPlaceProjectTheme {
                 // A surface container using the 'background' color from the theme
@@ -56,6 +59,9 @@ class MainActivity : FragmentActivity() {
             }
             composable(NavigationItem.Audio.route) {
                 AudioScreen(navController)
+            }
+            composable(NavigationItem.Map.route) {
+                MapScreen()
             }
             navigation(
                 startDestination = NavigationItem.MediaMain.route,
@@ -98,6 +104,15 @@ class MainActivity : FragmentActivity() {
             }
 
         }
+    }
+    override fun onStart() {
+        super.onStart()
+        MapKitFactory.getInstance().onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        MapKitFactory.getInstance().onStop()
     }
 
 

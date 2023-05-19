@@ -3,6 +3,7 @@ package com.example.showplaceproject.presentation.mainscreen
 import android.content.Context
 import android.net.Uri
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +25,7 @@ import com.example.showplaceproject.core.screenCenter
 import com.example.showplaceproject.presentation.SelectedScreen
 import com.example.showplaceproject.presentation.ar.ArCoreView
 import com.example.showplaceproject.presentation.bottomnav.ShowPlaceBottomNavigation
+import com.example.showplaceproject.presentation.navigation.NavigationItem
 import com.google.ar.core.Plane
 import com.google.ar.core.Pose
 import com.google.ar.core.TrackingState
@@ -73,6 +75,8 @@ fun MainScreen(navHostController: NavHostController) {
                     .constrainAs(createRef()) {
                         start.linkTo(centerImage.start)
                         bottom.linkTo(centerImage.top)
+                    }.clickable {
+                        navHostController.navigate(NavigationItem.Map.route)
                     }
             )
             Image(
