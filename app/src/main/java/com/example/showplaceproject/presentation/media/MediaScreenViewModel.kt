@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.showplaceproject.Location
 import com.example.showplaceproject.data.network.repository.GeoRemoteRepository
 import com.example.showplaceproject.domain.GeoInfoModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +27,7 @@ class MediaScreenViewModel @Inject constructor(
             Log.d("Error Geo", throwable.message.toString())
         }
         val response = withContext(Dispatchers.IO + handler) {
-            remoteDataSource.getGeoData(32.0, 32.0)
+            remoteDataSource.getGeoData(Location.lat, Location.lon)
         }
         _media.value = response
     }

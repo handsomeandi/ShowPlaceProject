@@ -22,7 +22,7 @@ class MainScreenViewModel @Inject constructor(
     val geoModel: MutableLiveData<GeoInfoModel> = MutableLiveData()
     private val isModelAdded: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    suspend fun init() {
+    suspend fun init(lat: Double, lon: Double) {
         val handler = CoroutineExceptionHandler { _, throwable ->
             Log.d("Error Geo", throwable.message.toString())
         }
@@ -34,7 +34,7 @@ class MainScreenViewModel @Inject constructor(
             geoModel.value = it
         } ?: run {
             val remoteResponse = withContext(handler + Dispatchers.IO) {
-                remoteRepository.getGeoData(32.0, 32.0)
+                remoteRepository.getGeoData(lat, lon)
             }
             geoModel.value = remoteResponse
 //            localRepository.insertGeoData(remoteResponse)

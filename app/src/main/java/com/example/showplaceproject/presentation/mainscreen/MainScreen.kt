@@ -1,6 +1,9 @@
 package com.example.showplaceproject.presentation.mainscreen
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -12,6 +15,7 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -24,9 +28,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavHostController
+import com.example.showplaceproject.Location
 import com.example.showplaceproject.R
 import com.example.showplaceproject.core.screenCenter
 import com.example.showplaceproject.presentation.SelectedScreen
@@ -34,6 +40,10 @@ import com.example.showplaceproject.presentation.ar.ArCoreView
 import com.example.showplaceproject.presentation.bottomnav.ShowPlaceBottomNavigation
 import com.example.showplaceproject.presentation.navigation.NavigationItem
 import com.example.showplaceproject.presentation.theme.Typography
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionsRequired
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.android.gms.location.LocationServices
 import com.google.ar.core.Plane
 import com.google.ar.core.Pose
 import com.google.ar.core.TrackingState
@@ -45,115 +55,150 @@ import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 
 
+@SuppressLint("MissingPermission")
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MainScreen(navHostController: NavHostController) {
     val viewModel: MainScreenViewModel = hiltViewModel()
     val modelObject by viewModel.model.observeAsState()
     val geoObject by viewModel.geoModel.observeAsState()
     val context = LocalContext.current
-    LaunchedEffect(Unit) {
-        viewModel.init()
-        getModelForExercise(context, viewModel.model, geoObject?.models?.first()?.file)
+    val lat = remember {
+        mutableStateOf(Location.lat)
     }
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        ArCoreView(
-            model = modelObject,
-            viewModel = viewModel,
-            onUpdateListener = ::onUpdate
+    val lon = remember {
+        mutableStateOf(Location.lon)
+    }
+    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
+    val mapPermissionsState = rememberMultiplePermissionsState(
+        permissions = listOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
         )
-        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val centerImage = createRef()
-            var alertVisible = remember {
-                mutableStateOf(false)
+    )
+    PermissionsRequired(
+        multiplePermissionsState = mapPermissionsState,
+        permissionsNotGrantedContent = {
+            SideEffect {
+                mapPermissionsState.launchMultiplePermissionRequest()
             }
-            Image(
-                painter = painterResource(id = R.drawable.borders),
-                contentDescription = "borders",
-                modifier = Modifier
-                    .padding(top = 45.dp, bottom = 38.dp)
-                    .constrainAs(centerImage) {
-                        centerHorizontallyTo(parent)
-                        centerVerticallyTo(parent)
-                    }
+        },
+        permissionsNotAvailableContent = {
+
+        },
+    ) {
+        fusedLocationClient.lastLocation.addOnSuccessListener {
+            lat.value = it.latitude
+            lon.value = it.longitude
+            Location.lon = it.longitude
+            Location.lat = it.latitude
+        }
+        LaunchedEffect(lat, lon) {
+            viewModel.init(lat.value, lon.value)
+            getModelForExercise(context, viewModel.model, geoObject?.models?.first()?.file)
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            ArCoreView(
+                model = modelObject,
+                viewModel = viewModel,
+                onUpdateListener = ::onUpdate
             )
-            Image(
-                painter = painterResource(id = R.drawable.ic_geo),
-                contentDescription = "Left Image",
-                modifier = Modifier
-                    .constrainAs(createRef()) {
-                        start.linkTo(centerImage.start)
-                        bottom.linkTo(centerImage.top)
-                    }
-                    .clickable {
-                        navHostController.navigate(NavigationItem.Map.route)
-                    }
-            )
-            Image(
-                painter = painterResource(id = R.drawable.ic_question),
-                contentDescription = "Right Image",
-                modifier = Modifier
-                    .constrainAs(createRef()) {
-                        end.linkTo(centerImage.end)
-                        bottom.linkTo(centerImage.top)
-                    }
-                    .clickable {
-                        alertVisible.value = !alertVisible.value
-                    }
-            )
-            if (alertVisible.value) {
-                AlertDialog(
+            ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+                val centerImage = createRef()
+                var alertVisible = remember {
+                    mutableStateOf(false)
+                }
+                Image(
+                    painter = painterResource(id = R.drawable.borders),
+                    contentDescription = "borders",
                     modifier = Modifier
-                        .constrainAs(createRef()) {
+                        .padding(top = 45.dp, bottom = 38.dp)
+                        .constrainAs(centerImage) {
                             centerHorizontallyTo(parent)
                             centerVerticallyTo(parent)
-                        },
-                    onDismissRequest = {
-                        alertVisible.value = false
-                    },
-                    title = {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text(
-                                style = Typography.h1,
-                                text = "О проекте",
-                                textAlign = TextAlign.Center
-                            )
                         }
-                    },
-                    text = {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text(
-                                style = Typography.body1,
-                                textAlign = TextAlign.Center,
-                                text = "Основная информация о проекте, созданном приложение его назначениях и представленном функционале. Можно описать перспективы приложения в дальнейшем использовании не только в рамках пещеры “Тавриды”, но и гораздо большие перспективы данного проекта."
-                            )
-                        }
-                    },
-                    backgroundColor = Color.White.copy(alpha = 0.7f),
-                    buttons = {
-                        // Add buttons here
-                    }
                 )
-            }
+                Image(
+                    painter = painterResource(id = R.drawable.ic_geo),
+                    contentDescription = "Left Image",
+                    modifier = Modifier
+                        .constrainAs(createRef()) {
+                            start.linkTo(centerImage.start)
+                            bottom.linkTo(centerImage.top)
+                        }
+                        .clickable {
+                            navHostController.navigate(NavigationItem.Map.route)
+                        }
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.ic_question),
+                    contentDescription = "Right Image",
+                    modifier = Modifier
+                        .constrainAs(createRef()) {
+                            end.linkTo(centerImage.end)
+                            bottom.linkTo(centerImage.top)
+                        }
+                        .clickable {
+                            alertVisible.value = !alertVisible.value
+                        }
+                )
+                if (alertVisible.value) {
+                    AlertDialog(
+                        modifier = Modifier
+                            .constrainAs(createRef()) {
+                                centerHorizontallyTo(parent)
+                                centerVerticallyTo(parent)
+                            },
+                        onDismissRequest = {
+                            alertVisible.value = false
+                        },
+                        title = {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(
+                                    style = Typography.h1,
+                                    text = "О проекте",
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        },
+                        text = {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(
+                                    style = Typography.body1,
+                                    textAlign = TextAlign.Center,
+                                    text = "Основная информация о проекте, созданном приложение его назначениях и представленном функционале. Можно описать перспективы приложения в дальнейшем использовании не только в рамках пещеры “Тавриды”, но и гораздо большие перспективы данного проекта."
+                                )
+                            }
+                        },
+                        backgroundColor = Color.White.copy(alpha = 0.7f),
+                        buttons = {
+                            // Add buttons here
+                        }
+                    )
+                }
 
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(createRef()) {
-                    bottom.linkTo(parent.bottom)
-                }) {
-                ShowPlaceBottomNavigation(SelectedScreen.MAIN, navHostController)
-            }
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .constrainAs(createRef()) {
+                        bottom.linkTo(parent.bottom)
+                    }) {
+                    ShowPlaceBottomNavigation(SelectedScreen.MAIN, navHostController)
+                }
 
+            }
         }
     }
+
 
 }
 

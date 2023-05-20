@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.showplaceproject.Location
 import com.example.showplaceproject.R
 import com.example.showplaceproject.core.getBitmapFromVectorDrawable
 import com.example.showplaceproject.databinding.MapLayoutBinding
@@ -44,7 +45,7 @@ fun MapScreen(
             mapView?.onStart()
             mapview.map.move(
                 CameraPosition(Point(
-                    45.042897, 34.283206), 18.0f, 0.0f, 0.0f),
+                    Location.lat, Location.lon), 18.0f, 0.0f, 0.0f),
                 Animation(Animation.Type.SMOOTH, 0.5f),
                 null
             )
