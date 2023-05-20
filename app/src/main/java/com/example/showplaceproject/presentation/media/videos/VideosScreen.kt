@@ -8,11 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.example.showplaceproject.domain.VideoModel
 import com.example.showplaceproject.presentation.media.FullVideoPlayer
 import com.example.showplaceproject.presentation.theme.Typography
 
 @Composable
-fun VideosScreen(videos: List<String>) {
+fun VideosScreen(videos: List<VideoModel>) {
     Box(modifier = Modifier.fillMaxSize()) {
 
         Column {
@@ -30,7 +31,7 @@ fun VideosScreen(videos: List<String>) {
             ) {
                 items(videos.size) { index ->
                     FullVideoPlayer(
-                        videos[index],
+                        videos[index].file,
                         Modifier
                             .fillMaxWidth()
                             .padding(bottom = 32.dp, end = 16.dp)

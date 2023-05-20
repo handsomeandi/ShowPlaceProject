@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class InfoResponseEntity(
     @SerializedName("models") val models: List<ModelEntity>? = null,
     @SerializedName("audio") val audio: List<AudioEntity>? = null,
+    @SerializedName("video") val video: List<VideoEntity>? = null,
     @SerializedName("text") val text: List<TextEntity>,
     @SerializedName("photos") val photos: List<PhotoEntity>,
     @SerializedName("metadata") val metadata: MetadataEntity
@@ -36,6 +37,13 @@ data class ModelEntity(
 
 
 data class AudioEntity(
+    @SerializedName("id") var id: Int,
+    @SerializedName("name") var name: String? = null,
+    @SerializedName("file") var file: String? = null,
+    @SerializedName("longitude") var longitude: Double? = null,
+    @SerializedName("latitude") var latitude: Double? = null
+)
+data class VideoEntity(
     @SerializedName("id") var id: Int,
     @SerializedName("name") var name: String? = null,
     @SerializedName("file") var file: String? = null,

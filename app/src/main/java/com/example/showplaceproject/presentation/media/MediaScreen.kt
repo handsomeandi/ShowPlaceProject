@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -18,6 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DefaultHttpDataSource
@@ -41,22 +43,13 @@ import com.google.gson.Gson
 
 @Composable
 fun MediaScreen(navHostController: NavHostController) {
-    val photoUrls = listOf(
-        "https://public.blenderkit.com/thumbnails/assets/9190a0dd661e4ca5a389a88563fc0602/files/thumbnail_ecc14c90-3fa6-45bd-914a-fd5f276f932d.jpg.256x256_q85_crop-%2C.jpg",
-        "https://res.cloudinary.com/featureupvote/image/upload/f_auto/T_CaveBase1_Preview_UI_qtpa0l.png",
-        "https://res.cloudinary.com/featureupvote/image/upload/f_auto/T_CaveBase1_Preview_UI_qtpa0l.png",
-        "https://res.cloudinary.com/featureupvote/image/upload/f_auto/T_CaveBase1_Preview_UI_qtpa0l.png",
-        "https://i0.wp.com/alpshiking.swisshikingvacations.com/wp-content/uploads/2019/11/Postojna.flicker.jpg?fit=1024%2C683&ssl=1",
-    )
 
-    val videoUrls = listOf(
-        "https://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4",
-        "https://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4",
-        "https://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4",
-        "https://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4",
-        "https://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4",
-    )
+    val viewModel: MediaScreenViewModel = hiltViewModel()
+    val media = viewModel.media.observeAsState()
 
+    LaunchedEffect(Unit) {
+        viewModel.init()
+    }
     Column {
         val scrollState = rememberScrollState()
         Column(
@@ -73,18 +66,24 @@ fun MediaScreen(navHostController: NavHostController) {
             )
             Title("Фотографии") {
                 val gson = Gson()
-                val photos = gson.toJson(photoUrls)
+                val photos = gson.toJson(media.value?.photos)
                 navHostController.navigate("${NavigationItem.Photo.route}?photos=$photos")
             }
-            ViewPagerWithPhotos(photoUrls)
+            media.value?.photos?.map {
+                it.file
+            }?.let { ViewPagerWithPhotos(it) }
             Title("Видео") {
                 val gson = Gson()
-                val videos = gson.toJson(videoUrls)
+                val videos = gson.toJson(media.value?.video)
                 navHostController.navigate("${NavigationItem.Video.route}?videos=$videos")
             }
-            ViewPagerWithVideos(videoUrls)
+            media.value?.video?.map {
+                it.file
+            }?.let { ViewPagerWithVideos(it) }
             Title("Файлы") {
-                navHostController.navigate(NavigationItem.Text.route)
+                val gson = Gson()
+                val texts = gson.toJson(media.value?.text)
+                navHostController.navigate("${NavigationItem.Text.route}?texts=$texts")
             }
         }
         ShowPlaceBottomNavigation(SelectedScreen.MEDIA, navHostController)
@@ -129,7 +128,7 @@ private fun Title(title: String, clickListener: () -> Unit) {
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-private fun ViewPagerWithVideos(videoUrls: List<String>) {
+private fun ViewPagerWithVideos(videoUrls: List<String?>) {
     Scaffold(
         modifier = Modifier
             .height(193.dp)
@@ -203,7 +202,7 @@ fun VideoPlayer(uri: Uri, modifier: Modifier, onClick: () -> Unit) {
 
 @Composable
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
-fun FullVideoPlayer(uri: String, modifier: Modifier) {
+fun FullVideoPlayer(uri: String?, modifier: Modifier) {
     val httpDataSourceFactory: HttpDataSource.Factory =
         DefaultHttpDataSource.Factory().setAllowCrossProtocolRedirects(false)
     val dataSourceFactory: DataSource.Factory = DataSource.Factory {

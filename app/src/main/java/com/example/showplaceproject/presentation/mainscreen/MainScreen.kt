@@ -8,13 +8,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,6 +33,7 @@ import com.example.showplaceproject.presentation.SelectedScreen
 import com.example.showplaceproject.presentation.ar.ArCoreView
 import com.example.showplaceproject.presentation.bottomnav.ShowPlaceBottomNavigation
 import com.example.showplaceproject.presentation.navigation.NavigationItem
+import com.example.showplaceproject.presentation.theme.Typography
 import com.google.ar.core.Plane
 import com.google.ar.core.Pose
 import com.google.ar.core.TrackingState
@@ -43,7 +51,7 @@ fun MainScreen(navHostController: NavHostController) {
     val modelObject by viewModel.model.observeAsState()
     val geoObject by viewModel.geoModel.observeAsState()
     val context = LocalContext.current
-    LaunchedEffect(geoObject) {
+    LaunchedEffect(Unit) {
         viewModel.init()
         getModelForExercise(context, viewModel.model, geoObject?.models?.first()?.file)
     }
@@ -58,6 +66,9 @@ fun MainScreen(navHostController: NavHostController) {
         )
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
             val centerImage = createRef()
+            var alertVisible = remember {
+                mutableStateOf(false)
+            }
             Image(
                 painter = painterResource(id = R.drawable.borders),
                 contentDescription = "borders",
@@ -75,7 +86,8 @@ fun MainScreen(navHostController: NavHostController) {
                     .constrainAs(createRef()) {
                         start.linkTo(centerImage.start)
                         bottom.linkTo(centerImage.top)
-                    }.clickable {
+                    }
+                    .clickable {
                         navHostController.navigate(NavigationItem.Map.route)
                     }
             )
@@ -87,7 +99,50 @@ fun MainScreen(navHostController: NavHostController) {
                         end.linkTo(centerImage.end)
                         bottom.linkTo(centerImage.top)
                     }
+                    .clickable {
+                        alertVisible.value = !alertVisible.value
+                    }
             )
+            if (alertVisible.value) {
+                AlertDialog(
+                    modifier = Modifier
+                        .constrainAs(createRef()) {
+                            centerHorizontallyTo(parent)
+                            centerVerticallyTo(parent)
+                        },
+                    onDismissRequest = {
+                        alertVisible.value = false
+                    },
+                    title = {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                style = Typography.h1,
+                                text = "О проекте",
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    },
+                    text = {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                style = Typography.body1,
+                                textAlign = TextAlign.Center,
+                                text = "Основная информация о проекте, созданном приложение его назначениях и представленном функционале. Можно описать перспективы приложения в дальнейшем использовании не только в рамках пещеры “Тавриды”, но и гораздо большие перспективы данного проекта."
+                            )
+                        }
+                    },
+                    backgroundColor = Color.White.copy(alpha = 0.7f),
+                    buttons = {
+                        // Add buttons here
+                    }
+                )
+            }
 
             Box(modifier = Modifier
                 .fillMaxWidth()
@@ -142,12 +197,17 @@ private fun onUpdate(
 
                         //Attach a node to this anchor with the scene as the parent
                         val anchorNode = AnchorNode(modelAnchor)
-                        anchorNode.setParent(fragment.arSceneView.scene)
+                        anchorNode.parent = fragment.arSceneView.scene
 
                         //create a new TranformableNode that will carry our object
                         val transformableNode = TransformableNode(fragment.transformationSystem)
-                        transformableNode.setParent(anchorNode)
+                        transformableNode.parent = anchorNode
                         transformableNode.renderable = modelRenderable
+
+                        transformableNode.scaleController.maxScale = 0.5f
+                        transformableNode.scaleController.minScale = 0.1f
+//                        transformableNode.worldScale = Vector3(0.7f, 0.7f, 0.7f)
+//                        transformableNode.localScale = Vector3(1f, 1f, 1f)
 
                         //Alter the real world position to ensure object renders on the table top. Not somewhere inside.
                         transformableNode.worldPosition = Vector3(

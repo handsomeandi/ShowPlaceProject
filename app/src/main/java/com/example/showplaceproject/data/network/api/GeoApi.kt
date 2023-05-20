@@ -8,4 +8,7 @@ interface GeoApi {
     @GET(AppUrls.getInfoUrl)
     suspend fun getGeoData(@Query("lat") lat: Double, @Query("lng") lng: Double): InfoResponseEntity
 
+    @GET(AppUrls.getPoints)
+    suspend fun getPointsData(): PointsResponseEntity
+
 }

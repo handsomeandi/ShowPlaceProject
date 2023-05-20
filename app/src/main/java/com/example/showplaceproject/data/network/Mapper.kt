@@ -6,6 +6,15 @@ import com.example.showplaceproject.domain.*
 import io.realm.kotlin.ext.toRealmList
 
 object Mapper {
+
+    fun PointsResponseEntity.toModel() = PointsModel(
+        points.map {
+            PointModel(
+                it.lat,
+                it.lon
+            )
+        }
+    )
     fun InfoResponseEntity.toModel() = GeoInfoModel(
         models = this.models?.map {
             it.toModel()
@@ -17,6 +26,9 @@ object Mapper {
             it.toModel()
         },
         photos = this.photos.map {
+            it.toModel()
+        },
+        video = this.video?.map {
             it.toModel()
         },
         metadata = this.metadata.toModel()
@@ -31,6 +43,14 @@ object Mapper {
     )
 
     private fun AudioEntity.toModel() = AudioModel(
+        id = this.id,
+        name = this.name,
+        file = this.file,
+        longitude = this.longitude,
+        latitude = this.latitude,
+    )
+
+    private fun VideoEntity.toModel() = VideoModel(
         id = this.id,
         name = this.name,
         file = this.file,

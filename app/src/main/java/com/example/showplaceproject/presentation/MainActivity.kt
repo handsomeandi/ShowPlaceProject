@@ -15,6 +15,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.showplaceproject.domain.PhotoModel
+import com.example.showplaceproject.domain.TextModel
+import com.example.showplaceproject.domain.VideoModel
 import com.example.showplaceproject.presentation.audio.AudioScreen
 import com.example.showplaceproject.presentation.mainscreen.MainScreen
 import com.example.showplaceproject.presentation.map.MapScreen
@@ -78,9 +81,9 @@ class MainActivity : FragmentActivity() {
                         }
                     )) { from ->
                     val gson = Gson()
-                    val list: List<String> = gson.fromJson(
+                    val list: List<PhotoModel> = gson.fromJson(
                         from.arguments?.getString("photos"),
-                        object : TypeToken<List<String>>() {}.type
+                        object : TypeToken<List<PhotoModel>>() {}.type
                     )
                     PhotosScreen(photos = list)
                 }
@@ -92,14 +95,25 @@ class MainActivity : FragmentActivity() {
                         }
                     )) { from ->
                     val gson = Gson()
-                    val list: List<String> = gson.fromJson(
+                    val list: List<VideoModel> = gson.fromJson(
                         from.arguments?.getString("videos"),
-                        object : TypeToken<List<String>>() {}.type
+                        object : TypeToken<List<VideoModel>>() {}.type
                     )
                     VideosScreen(videos = list)
                 }
-                composable(NavigationItem.Text.route) {
-                    TextScreen(navController)
+                composable("${NavigationItem.Text.route}?texts={texts}",
+                        arguments = listOf(
+                        navArgument("texts") {
+                            type = NavType.StringType
+                            defaultValue = "[]"
+                        }
+                        )) { from ->
+                    val gson = Gson()
+                    val list: List<TextModel> = gson.fromJson(
+                        from.arguments?.getString("texts"),
+                        object : TypeToken<List<TextModel>>() {}.type
+                    )
+                    TextScreen(texts = list)
                 }
             }
 

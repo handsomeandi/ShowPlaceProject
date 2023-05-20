@@ -15,10 +15,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil.compose.rememberImagePainter
+import com.example.showplaceproject.domain.PhotoModel
 import com.example.showplaceproject.presentation.theme.Typography
 
 @Composable
-fun PhotosScreen(photos: List<String>) {
+fun PhotosScreen(photos: List<PhotoModel>) {
     var selectedPhoto: String? by remember { mutableStateOf(null) }
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -39,7 +40,7 @@ fun PhotosScreen(photos: List<String>) {
                 items(photos.size) { index ->
                     Image(
                         painter = rememberImagePainter(
-                            data = photos[index],
+                            data = photos[index].file,
                         ),
                         contentScale = ContentScale.Crop,
                         contentDescription = null,
@@ -49,7 +50,7 @@ fun PhotosScreen(photos: List<String>) {
                             .padding(end = 22.dp, bottom = 22.dp)
                             .clip(RoundedCornerShape(12.dp))
                             .clickable {
-                                selectedPhoto = photos[index]
+                                selectedPhoto = photos[index].file
                             }
                     )
                 }

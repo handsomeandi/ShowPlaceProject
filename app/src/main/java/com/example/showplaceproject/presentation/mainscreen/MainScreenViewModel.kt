@@ -15,8 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
-    val localRepository: GeoLocalRepository,
-    val remoteRepository: GeoRemoteRepository
+    private val localRepository: GeoLocalRepository,
+    private val remoteRepository: GeoRemoteRepository
 ) : ViewModel() {
     val model: MutableLiveData<ModelRenderable> = MutableLiveData()
     val geoModel: MutableLiveData<GeoInfoModel> = MutableLiveData()
@@ -37,7 +37,7 @@ class MainScreenViewModel @Inject constructor(
                 remoteRepository.getGeoData(32.0, 32.0)
             }
             geoModel.value = remoteResponse
-//                    localRepository.insertGeoData(it)
+//            localRepository.insertGeoData(remoteResponse)
         }
     }
 
